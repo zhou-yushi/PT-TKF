@@ -1,0 +1,10 @@
+# Cloudflare Pages _headers
+# 为静态资源添加长期缓存与基础安全头
+
+/assets/*
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin

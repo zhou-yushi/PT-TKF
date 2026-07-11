@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh" id="htmlRoot">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PT-TKF — Indonesian foundation construction company specializing in rotary drilling (bored pile). / 印度尼西亚专业旋挖基础施工公司。" />
+  <title>PT-TKF | Foundation Construction · Rotary Drilling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ===== Navbar ===== -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="logo">
+        <span class="logo-mark">PT</span>
+        <span class="logo-text">TKF</span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#home" data-i18n="nav.home">首页</a>
+        <a href="#about" data-i18n="nav.about">关于我们</a>
+        <a href="#equipment" data-i18n="nav.equipment">设备实力</a>
+        <a href="#brochures" data-i18n="nav.brochures">产品宣传册</a>
+        <a href="#services" data-i18n="nav.services">业务范围</a>
+        <a href="#projects" data-i18n="nav.projects">工程案例</a>
+        <a href="#contact" data-i18n="nav.contact">联系我们</a>
+      </nav>
+      <div class="nav-right">
+        <div class="lang-switch" id="langSwitch">
+          <button class="lang-btn" data-lang="zh"><img class="flag" src="assets/flags/cn.svg" alt="中文"> 中文</button>
+          <button class="lang-btn" data-lang="id"><img class="flag" src="assets/flags/id.svg" alt="印尼文"> ID</button>
+          <button class="lang-btn" data-lang="en"><img class="flag" src="assets/flags/gb.svg" alt="英文"> EN</button>
+        </div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="container hero-inner">
+      <span class="hero-badge" data-i18n="hero.badge">印度尼西亚基础施工专家</span>
+      <h1 class="hero-title" data-i18n="hero.title">PT-TKF</h1>
+      <p class="hero-subtitle" data-i18n="hero.subtitle">专业旋挖钻孔灌注桩基础施工</p>
+      <p class="hero-desc" data-i18n="hero.desc">我们是一家扎根印度尼西亚的基础施工公司...</p>
+      <div class="hero-actions">
+        <a href="#equipment" class="btn btn-primary" data-i18n="hero.cta1">了解我们的设备</a>
+        <a href="#contact" class="btn btn-outline" data-i18n="hero.cta2">联系我们</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="section about" id="about">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="about.title">关于 PT-TKF</h2>
+        <p data-i18n="about.subtitle">以专业设备与丰富经验，夯实每一寸地基</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p data-i18n="about.p1"></p>
+          <p data-i18n="about.p2"></p>
+        </div>
+        <div class="about-stats" id="aboutStats"><!-- filled by JS --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Equipment ===== -->
+  <section class="section equipment" id="equipment">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="equipment.title">设备实力</h2>
+        <p data-i18n="equipment.subtitle">现代化旋挖施工装备，保障项目高效推进</p>
+      </div>
+      <div class="cards-grid" id="equipmentGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===== Brochures ===== -->
+  <section class="section brochures" id="brochures">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="brochures.title">产品宣传册</h2>
+        <p data-i18n="brochures.subtitle">四种旋喷桩机型号，点击下载对应技术手册</p>
+      </div>
+      <div class="brochure-grid" id="brochureGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===== Services ===== -->
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="services.title">业务范围</h2>
+        <p data-i18n="services.subtitle">提供从勘察到成桩的一站式基础工程服务</p>
+      </div>
+      <div class="cards-grid" id="servicesGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===== Advantages ===== -->
+  <section class="section advantages" id="advantages">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="advantages.title">为什么选择我们</h2>
+      </div>
+      <div class="adv-grid" id="advantagesGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===== Projects ===== -->
+  <section class="section projects" id="projects">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="projects.title">工程案例</h2>
+        <p data-i18n="projects.subtitle">我们参与建设的印度尼西亚重点项目</p>
+      </div>
+      <div class="cards-grid" id="projectsGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="contact.title">联系我们</h2>
+        <p data-i18n="contact.subtitle">期待与您合作，共筑坚实基础</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3 data-i18n="contact.company">PT-TKF</h3>
+          <ul class="info-list">
+            <li><span class="info-label" data-i18n="contact.addressLabel">公司地址</span><span id="cAddress"></span></li>
+            <li><span class="info-label" data-i18n="contact.phoneLabel">联系电话</span><a id="cPhone" href="#"></a></li>
+            <li><span class="info-label" data-i18n="contact.emailLabel">电子邮箱</span><a id="cEmail" href="#"></a></li>
+            <li><span class="info-label" data-i18n="contact.whatsappLabel">WhatsApp</span><a id="cWhatsapp" href="#"></a></li>
+          </ul>
+        </div>
+        <form class="contact-form" id="contactForm">
+          <input type="text" id="fName" name="name" required placeholder="" data-i18n-ph="contact.formName" />
+          <input type="text" id="fPhone" name="phone" required placeholder="" data-i18n-ph="contact.formPhone" />
+          <textarea id="fMsg" name="message" rows="4" required placeholder="" data-i18n-ph="contact.formMsg"></textarea>
+          <button type="submit" class="btn btn-primary" data-i18n="contact.formSubmit">发送咨询</button>
+          <p class="form-note" data-i18n="contact.formNote"></p>
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-col">
+        <a href="#home" class="logo footer-logo">
+          <span class="logo-mark">PT</span><span class="logo-text">TKF</span>
+        </a>
+        <p class="footer-desc" data-i18n="footer.desc">PT-TKF — 印度尼西亚专业旋挖基础施工公司。</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.quickLinks">快速导航</h4>
+        <a href="#about" data-i18n="nav.about">关于我们</a>
+        <a href="#equipment" data-i18n="nav.equipment">设备实力</a>
+        <a href="#services" data-i18n="nav.services">业务范围</a>
+        <a href="#brochures" data-i18n="nav.brochures">产品宣传册</a>
+        <a href="#contact" data-i18n="nav.contact">联系我们</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.contactUs">联系我们</h4>
+        <p id="fAddress"></p>
+        <p id="fPhone2"></p>
+        <p id="fEmail2"></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p><span data-i18n="footer.rights">版权所有</span> &copy; <span id="year"></span> PT-TKF. <span data-i18n="footer.built">基础施工 · 旋挖钻孔灌注桩</span> · <a href="/admin" style="color:inherit;text-decoration:underline">后台管理</a></p>
+    </div>
+  </footer>
+
+  <!-- ===== Lightbox / 图片放大查看 ===== -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous">&#10094;</button>
+    <figure class="lightbox-figure">
+      <img id="lightboxImg" src="" alt="" />
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next">&#10095;</button>
+  </div>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

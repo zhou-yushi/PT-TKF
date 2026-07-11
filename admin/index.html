@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PT-TKF 内容管理后台</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <!-- 登录 -->
+  <div id="login" class="login-wrap">
+    <div class="login-box">
+      <h1>PT-TKF 后台</h1>
+      <p class="login-sub">内容管理系统</p>
+      <input type="password" id="pwd" placeholder="请输入后台密码" />
+      <button id="loginBtn">登 录</button>
+      <p id="loginErr" class="login-err"></p>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand">PT-TKF <span>内容管理</span></div>
+      <div class="topbar-right">
+        <div class="lang-tabs" id="langTabs"></div>
+        <a class="view-site" href="/" target="_blank">查看前台 ↗</a>
+        <button id="saveBtn" class="save-btn">保存更改</button>
+        <button id="logoutBtn" class="logout-btn">退出</button>
+      </div>
+    </header>
+
+    <div class="save-state" id="saveState"></div>
+
+    <div class="translate-bar">
+      <span class="tb-label">自动翻译：</span>
+      <span class="tb-text">以</span>
+      <select id="srcLang" class="tb-select">
+        <option value="zh">中文</option>
+        <option value="id">Indonesia</option>
+        <option value="en">English</option>
+      </select>
+      <span class="tb-text">为源，填充其余两种语言</span>
+      <button id="translateBtn" class="translate-btn">开始翻译</button>
+      <span id="translateState" class="translate-state"></span>
+    </div>
+
+    <details class="settings-panel">
+      <summary>翻译服务设置（填入 Agnes API Key）</summary>
+      <div class="settings-grid">
+        <label class="set-row">
+          <span>翻译引擎</span>
+          <select id="cfgProvider">
+            <option value="agnes">Agnes AI</option>
+            <option value="mymemory">MyMemory（免费无需 Key）</option>
+            <option value="google">Google</option>
+            <option value="deepl">DeepL（需 Key）</option>
+          </select>
+        </label>
+        <label class="set-row">
+          <span>Agnes API Key</span>
+          <input type="password" id="cfgAgnesKey" placeholder="在此粘贴你的 Agnes API Key" autocomplete="off" />
+        </label>
+        <label class="set-row">
+          <span>模型</span>
+          <input type="text" id="cfgAgnesModel" placeholder="agnes-2.0-flash" />
+        </label>
+        <label class="set-row">
+          <span>Base URL</span>
+          <input type="text" id="cfgAgnesBase" placeholder="https://apihub.agnes-ai.com/v1" />
+        </label>
+        <div class="set-actions">
+          <button id="cfgSaveBtn" class="translate-btn">保存设置</button>
+          <span id="cfgState" class="translate-state"></span>
+        </div>
+      </div>
+    </details>
+
+    <div class="view-tabs" id="viewTabs">
+      <button data-view="content" class="active">内容编辑</button>
+      <button data-view="inquiries">留言管理 <span id="inqBadge" class="badge hidden">0</span></button>
+    </div>
+
+    <main class="content" id="contentArea"></main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
