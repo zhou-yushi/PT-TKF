@@ -229,6 +229,7 @@
       const m = t.getAttribute("data-desc");
       state.i18n[lang].brochures.descs = state.i18n[lang].brochures.descs || {};
       state.i18n[lang].brochures.descs[m] = v;
+      markSourceLang();
       return;
     }
     if (t.hasAttribute("data-bro")) {
@@ -247,12 +248,14 @@
       const idx = +t.getAttribute("data-idx");
       const fkey = t.getAttribute("data-fkey");
       state.i18n[lang][sec][arr][idx][fkey] = v;
+      markSourceLang();
       return;
     }
     if (t.hasAttribute("data-sec")) {
       const sec = t.getAttribute("data-sec");
       const key = t.getAttribute("data-key");
       state.i18n[lang][sec][key] = v;
+      markSourceLang();
       return;
     }
   }
@@ -340,6 +343,21 @@
     if (!el) return;
     el.textContent = msg;
     el.className = "translate-state " + (cls || "");
+  }
+
+  // 把翻译源语言设为当前正在编辑的语言（随编辑自动更新，也可手动选下拉）
+  function markSourceLang() {
+    const sl = $("srcLang");
+    if (sl) sl.value = lang;
+    updateSrcHint();
+  }
+  // 在翻译栏提示当前将以哪种语言为源翻译另外两种
+  function updateSrcHint() {
+    const el = $("srcHint");
+    if (!el) return;
+    const code = $("srcLang").value;
+    const name = (LANGS.find(l => l.code === code) || LANGS[0]).name;
+    el.textContent = "（将把「" + name + "」翻译到另外两种）";
   }
 
   async function translateAll() {
@@ -521,6 +539,8 @@
     $("saveBtn").addEventListener("click", save);
     $("logoutBtn").addEventListener("click", logout);
     $("translateBtn").addEventListener("click", translateAll);
+    $("srcLang").addEventListener("change", updateSrcHint);
+    updateSrcHint();
     $("cfgSaveBtn").addEventListener("click", saveConfig);
     $("viewTabs").addEventListener("click", e => {
       const b = e.target.closest("[data-view]");
@@ -532,7 +552,7 @@
     });
     $("langTabs").addEventListener("click", e => {
       const b = e.target.closest("[data-lang]");
-      if (b) { lang = b.getAttribute("data-lang"); const sl = $("srcLang"); if (sl) sl.value = lang; renderLangTabs(); if (view === "inquiries") loadInquiries(); else render(); }
+      if (b) { lang = b.getAttribute("data-lang"); renderLangTabs(); if (view === "inquiries") loadInquiries(); else render(); }
     });
 
     if (token) {

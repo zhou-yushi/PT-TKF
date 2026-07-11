@@ -1,5 +1,5 @@
 // POST /api/translate  鉴权：调用外部翻译服务，翻译内容对象
-// 引擎链：DeepL(有 Key 时优先) → Google → MyMemory；均为真正的机器翻译。
+// 引擎链：Google → MyMemory；均为真正的机器翻译，失败返回 null 由调用方保留目标旧值。
 // 注意：不再使用 LLM(agnes) 做翻译——它会返回自我介绍/拒答等垃圾文本，污染译文。
 import { json, requireAuth, getConfig } from "../lib.js";
 
@@ -51,34 +51,12 @@ async function mtMyMemory(text, sl, tl) {
   } catch { return null; }
 }
 
-async function mtDeepL(text, sl, tl, key) {
-  try {
-    // DeepL 源/目标语言用大写基础码（zh-CN → ZH）
-    const dSl = sl.split("-")[0].toUpperCase();
-    const dTl = tl.split("-")[0].toUpperCase();
-    const body = `auth_key=${encodeURIComponent(key)}&text=${encodeURIComponent(text)}&source_lang=${dSl}&target_lang=${dTl}`;
-    const r = await fetch("https://api-free.deepl.com/v2/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body
-    });
-    if (!r.ok) return null;
-    const j = await r.json();
-    const out = j.translations && j.translations[0] && j.translations[0].text;
-    return (out && out.trim()) || null;
-  } catch { return null; }
-}
-
 // 返回译文字符串；失败或无需翻译时返回 null（由调用方决定回退到目标旧值，绝不回退到源语言）
 async function translateOne(text, source, target, SVC) {
   const sl = LANG_MAP[source] || LANG_MAP[guessSource(text)];
   const tl = LANG_MAP[target];
   if (!tl || sl === tl) return null; // 源=目标或未知目标：不翻译
-  // 引擎链：DeepL(有 Key) → Google → MyMemory
-  if (SVC.deeplKey) {
-    const o = await mtDeepL(text, sl, tl, SVC.deeplKey);
-    if (o) return o;
-  }
+  // 引擎链：Google → MyMemory
   let o = await mtGoogle(text, sl, tl);
   if (o) return o;
   o = await mtMyMemory(text, sl, tl);

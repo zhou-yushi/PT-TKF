@@ -40,7 +40,8 @@
         <option value="id">Indonesia</option>
         <option value="en">English</option>
       </select>
-      <span class="tb-text">为源，填充其余两种语言</span>
+      <span class="tb-text">为源，翻译另外两种语言</span>
+      <span class="tb-text" id="srcHint"></span>
       <button id="translateBtn" class="translate-btn">开始翻译</button>
       <span id="translateState" class="translate-state"></span>
     </div>
@@ -53,7 +54,6 @@
           <select id="cfgProvider">
             <option value="google">Google（推荐，免费无需 Key）</option>
             <option value="mymemory">MyMemory（免费无需 Key，备用）</option>
-            <option value="deepl">DeepL（需 Key）</option>
           </select>
         </label>
         <div class="set-actions">

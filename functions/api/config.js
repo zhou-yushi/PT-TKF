@@ -17,9 +17,6 @@ export async function onRequestPost({ request, env }) {
   const cur = await getConfig(env.TKF_DB, env);
   const next = { ...cur };
   if (b.provider) next.provider = b.provider;
-  if (typeof b.deeplKey === "string" && b.deeplKey && b.deeplKey !== "******") {
-    next.deeplKey = b.deeplKey;
-  }
   await setConfig(env.TKF_DB, next);
   return json({ ok: true });
 }

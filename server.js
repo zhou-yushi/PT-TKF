@@ -185,8 +185,7 @@ function loadConfig() {
   let c = {};
   try { c = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8")); } catch (e) {}
   return Object.assign({
-    provider: process.env.TRANSLATE_PROVIDER || "google",
-    deeplKey: process.env.DEEPL_KEY || ""
+    provider: process.env.TRANSLATE_PROVIDER || "google"
   }, c);
 }
 let SVC = loadConfig();
@@ -254,26 +253,11 @@ function mtMyMemory(text, sl, tl) {
     return null;
   });
 }
-function mtDeepL(text, sl, tl, key) {
-  return new Promise((resolve) => {
-    const dSl = sl.split("-")[0].toUpperCase(), dTl = tl.split("-")[0].toUpperCase();
-    const body = `auth_key=${encodeURIComponent(key)}&text=${encodeURIComponent(text)}&source_lang=${dSl}&target_lang=${dTl}`;
-    const req = https.request(
-      { hostname: "api-free.deepl.com", path: "/v2/translate", method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept-Encoding": "identity" } },
-      (res2) => { let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
-        try { const t = JSON.parse(d).translations[0].text; resolve((t && t.trim()) || null); } catch { resolve(null); }
-      }); });
-    req.on("error", () => resolve(null));
-    req.write(body); req.end();
-  });
-}
-// 引擎链：DeepL(有 Key) → Google → MyMemory；失败返回 null，由调用方保留目标旧值。不再用 LLM。
+// 引擎链：Google → MyMemory；失败返回 null，由调用方保留目标旧值。不再用 LLM。
 async function translateOne(text, source, target) {
   const sl = LANG_MAP[source] || LANG_MAP[guessSource(text)];
   const tl = LANG_MAP[target];
   if (!tl || sl === tl) return null;
-  if (SVC.deeplKey) { const o = await mtDeepL(text, sl, tl, SVC.deeplKey); if (o) return o; }
   let o = await mtGoogle(text, sl, tl); if (o) return o;
   o = await mtMyMemory(text, sl, tl); if (o) return o;
   return null; // 全部失败：保留目标旧值，绝不写入源语言
@@ -347,9 +331,6 @@ app.get("/api/config", requireAuth, (req, res) => {
 app.post("/api/config", requireAuth, (req, res) => {
   const b = req.body || {};
   if (b.provider) SVC.provider = b.provider;
-  if (typeof b.deeplKey === "string") {
-    if (b.deeplKey && b.deeplKey !== "******") SVC.deeplKey = b.deeplKey;
-  }
   try {
     saveConfig();
     res.json({ ok: true });

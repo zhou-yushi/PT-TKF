@@ -98,8 +98,7 @@ export async function setContent(db, obj) {
 // ---------- 翻译服务配置 ----------
 export function defaultConfig(env) {
   return {
-    provider: (env && env.TRANSLATE_PROVIDER) || "google",
-    deeplKey: (env && env.DEEPL_KEY) || ""
+    provider: (env && env.TRANSLATE_PROVIDER) || "google"
   };
 }
 export async function getConfig(db, env) {
