@@ -9,7 +9,7 @@ compatibility_date = "2024-09-23"
 [[d1_databases]]
 binding = "TKF_DB"
 database_name = "pt-tkf-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "ebe40f14-c671-4675-87e2-d59d66b0722a"
 # 本地开发用本地数据库：wrangler pages dev 会自动使用本地 D1；远程建表见 db/schema.sql
 
 # 非敏感环境变量（敏感项请用 secret：见 CLOUDFLARE_DEPLOY.md）
