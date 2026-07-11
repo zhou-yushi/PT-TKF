@@ -13,16 +13,9 @@ My-TKF/
 │   ├── js/
 │   │   ├── i18n.js         # 三语言内容字典（在此修改文案）
 │   │   └── main.js         # 语言切换、动态渲染、交互逻辑
-│   ├── pdf/                # 四种旋喷桩机宣传册 PDF（用户可下载）
-│   │   ├── KR110D-A.pdf
-│   │   ├── KR125A-202412.pdf
-│   │   ├── KR300E.pdf
-│   │   └── KR360A-202412.pdf
-│   └── img/                # 各型号展示图片
-│       ├── kr110d.png
-│       ├── kr125a.png
-│       ├── kr300e.png
-│       └── kr360a.png
+│   └── img/                # 各型号展示图片（WebP 为主，同名 .png 为兼容兜底）
+│       ├── 110.webp  125.webp  300.webp  360.webp
+│       └── hero-jakarta.webp
 ├── _headers                # Cloudflare Pages 缓存与安全头
 └── README.md
 ```
@@ -91,7 +84,7 @@ ADMIN_PASSWORD=你的密码 npm start
 - 顶部切换 **中文 / Indonesia / English**，分别编辑三语文案；
 - 分板块编辑：导航、首屏、关于我们、设备实力、宣传册文案、业务范围、优势、工程案例、联系我们、页脚；
 - 列表类（数据统计、设备、业务、优势、案例）可**增删条目**；
-- **宣传册型号与图片**：可增删型号、修改英文名/PDF 路径，并直接**上传展示图片**；
+- **宣传册型号与图片**：可增删型号、修改英文名，并直接**上传展示图片**；
 - 点击「保存更改」即写入 `data/content.json`，前台刷新即生效。
 
 > 注意：令牌保存在服务器内存中，重启服务后需重新登录；图片上传保存到 `assets/img/`。
@@ -100,7 +93,7 @@ ADMIN_PASSWORD=你的密码 npm start
 
 - **文案翻译**：编辑 `data/content.json` 中 `i18n` 的 `zh` / `id` / `en` 三个对象（保持结构一致）。
 - **联系方式**：同文件中 `contact` 部分修改地址、电话、邮箱、WhatsApp。
-- **宣传册与下载**：`brochures` 数组维护型号→图片/PDF 映射；各型号描述在 `i18n.*.brochures.descs` 中。
+- **宣传册（图片展示）**：`brochures` 数组维护型号→图片映射；各型号描述在 `i18n.*.brochures.descs` 中。
 - **配图**：`assets/css/style.css` 中 `.hero-bg` 使用了 Unsplash 图片，可替换为你公司的实景照片（建议放到 `assets/img/` 并改为本地路径，避免外链失效）。
 - **新增语言**：在 `data/content.json` 的 `i18n` 增加语言对象，并在 `index.html` 的语言切换栏与 `assets/js/main.js` 的 `SUPPORTED` 中补充。
 
