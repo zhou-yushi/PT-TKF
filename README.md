@@ -110,3 +110,4 @@ ADMIN_PASSWORD=你的密码 npm start
 
 - **仅静态站点**（无后台）：直接拖拽到 Cloudflare Pages 即可，前台使用 `i18n.js` 内置兜底内容，但**无法在线编辑**。
 - **带后台部署**：需运行 Node 服务（如 CloudBase / 任意云服务器 / 容器）。将整个仓库部署到支持 Node 的环境，`npm install && npm start`，并用环境变量设置 `ADMIN_PASSWORD` 与 `PORT`。前台通过 `/api/content` 读取最新内容。
+# PT-TKF
