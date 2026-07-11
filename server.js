@@ -186,10 +186,7 @@ function loadConfig() {
   try { c = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8")); } catch (e) {}
   return Object.assign({
     provider: process.env.TRANSLATE_PROVIDER || "google",
-    deeplKey: process.env.DEEPL_KEY || "",
-    agnesApiKey: process.env.AGNES_API_KEY || "",
-    agnesBase: process.env.AGNES_BASE || "https://apihub.agnes-ai.com/v1",
-    agnesModel: process.env.AGNES_MODEL || "agnes-2.0-flash"
+    deeplKey: process.env.DEEPL_KEY || ""
   }, c);
 }
 let SVC = loadConfig();
@@ -223,7 +220,7 @@ function shouldTranslate(text, key) {
   if (SKIP_KEYS.has(key)) return false;
   return isTranslatable(text);
 }
-// 非 Agnes（需显式源语言）时，粗略判断字段源语言：含汉字→中文，否则→英语（兜底）
+// 粗略判断字段源语言：含汉字→中文，否则→英语（兜底，主用显式 source）
 function guessSource(text) {
   return hasHan(text) ? "zh" : "en";
 }
@@ -246,7 +243,8 @@ function mtGoogle(text, sl, tl) {
   });
 }
 function mtMyMemory(text, sl, tl) {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sl}|${tl}`;
+  // 带 de=邮箱 参数可将每日配额从 5000 提升到 50000 字
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sl}|${tl}&de=admin@pt-tkf.pages.dev`;
   return httpGetJson(url).then(j => {
     if (j && j.responseStatus === 200 && j.responseData && j.responseData.translatedText) {
       const out = j.responseData.translatedText.trim();
@@ -270,19 +268,19 @@ function mtDeepL(text, sl, tl, key) {
     req.write(body); req.end();
   });
 }
-// 引擎链：DeepL(有 Key) → Google → MyMemory；全部失败保留原文。不再用 LLM。
+// 引擎链：DeepL(有 Key) → Google → MyMemory；失败返回 null，由调用方保留目标旧值。不再用 LLM。
 async function translateOne(text, source, target) {
-  if (!isTranslatable(text)) return text;
   const sl = LANG_MAP[source] || LANG_MAP[guessSource(text)];
   const tl = LANG_MAP[target];
-  if (!tl || sl === tl) return text;
+  if (!tl || sl === tl) return null;
   if (SVC.deeplKey) { const o = await mtDeepL(text, sl, tl, SVC.deeplKey); if (o) return o; }
   let o = await mtGoogle(text, sl, tl); if (o) return o;
   o = await mtMyMemory(text, sl, tl); if (o) return o;
-  return text;
+  return null; // 全部失败：保留目标旧值，绝不写入源语言
 }
 // 递归翻译对象（带并发限制，避免触发配额）
-function translateObject(obj, source, target, limit = 5) {
+// srcObj: 源语言内容；tgtObj: 目标语言现有内容（翻译失败时回退用）
+function translateObject(srcObj, tgtObj, source, target, limit = 5) {
   const tasks = [];
   (function collect(o, key) {
     if (typeof o === "string") {
@@ -295,45 +293,45 @@ function translateObject(obj, source, target, limit = 5) {
         collect(o[k], k);
       }
     }
-  })(obj, "");
+  })(srcObj, "");
   const unique = [...new Set(tasks)];
   const cache = {};
   let idx = 0;
   async function worker() {
     while (idx < unique.length) {
       const t = unique[idx++];
-      cache[t] = await translateOne(t, source, target);
+      cache[t] = await translateOne(t, source, target); // 译文 或 null
     }
   }
   return Promise.all(Array.from({ length: Math.min(limit, unique.length || 1) }, worker)).then(() => {
-    function walk(o, key) {
-      if (typeof o === "string") {
-        if (SKIP_KEYS.has(key)) return o;
-        return cache[o] !== undefined ? cache[o] : o;
+    function walk(s, tg, key) {
+      if (typeof s === "string") {
+        if (SKIP_KEYS.has(key)) return s;
+        if (!shouldTranslate(s, key)) return s;
+        const c = cache[s];
+        if (c) return c;                                       // 翻译成功
+        if (typeof tg === "string" && tg.trim()) return tg;    // 失败：保留目标旧值
+        return s;                                              // 目标为空才兜底用源
       }
-      if (Array.isArray(o)) return o.map(v => walk(v, key));
-      if (o && typeof o === "object") { const out = {}; for (const k of Object.keys(o)) out[k] = walk(o[k], k); return out; }
-      return o;
+      if (Array.isArray(s)) return s.map((v, i) => walk(v, Array.isArray(tg) ? tg[i] : undefined, key));
+      if (s && typeof s === "object") {
+        const out = {};
+        for (const k of Object.keys(s)) out[k] = walk(s[k], (tg && typeof tg === "object") ? tg[k] : undefined, k);
+        return out;
+      }
+      return s;
     }
-    return walk(obj, "");
+    return walk(srcObj, tgtObj, "");
   });
 }
 
 app.post("/api/translate", requireAuth, async (req, res) => {
-  const { source, target, data } = req.body || {};
+  const { source, target, data, targetData } = req.body || {};
   if (!source || !target || !data || !LANG_MAP[source] || !LANG_MAP[target]) {
     return res.status(400).json({ error: "参数缺失或语言不支持" });
   }
-  // 未配置必要 Key 时直接报错，避免前端把“原文”当译文覆盖目标语言（再次造成混排）
-  const ak = SVC.agnesApiKey || process.env.AGNES_API_KEY;
-  if (SVC.provider === "agnes" && !ak) {
-    return res.status(400).json({ error: "未配置 Agnes API Key，请先在「翻译服务设置」中填写 Key" });
-  }
-  if (SVC.provider === "deepl" && !SVC.deeplKey) {
-    return res.status(400).json({ error: "未配置 DeepL Key，请先在「翻译服务设置」中填写" });
-  }
   try {
-    const result = await translateObject(data, source, target);
+    const result = await translateObject(data, targetData || {}, source, target);
     res.json({ ok: true, result });
   } catch (e) {
     res.status(500).json({ error: "翻译失败: " + e.message });
@@ -343,22 +341,12 @@ app.post("/api/translate", requireAuth, async (req, res) => {
 // ---------- 翻译服务配置（后台设置，持久化） ----------
 app.get("/api/config", requireAuth, (req, res) => {
   res.json({
-    provider: SVC.provider,
-    agnesBase: SVC.agnesBase,
-    agnesModel: SVC.agnesModel,
-    agnesApiKey: SVC.agnesApiKey ? "******" : "",
-    hasAgnesKey: !!SVC.agnesApiKey
+    provider: SVC.provider
   });
 });
 app.post("/api/config", requireAuth, (req, res) => {
   const b = req.body || {};
   if (b.provider) SVC.provider = b.provider;
-  if (b.agnesBase) SVC.agnesBase = b.agnesBase;
-  if (b.agnesModel) SVC.agnesModel = b.agnesModel;
-  if (typeof b.agnesApiKey === "string") {
-    // 仅当填写了新值（非掩码占位）才更新
-    if (b.agnesApiKey && b.agnesApiKey !== "******") SVC.agnesApiKey = b.agnesApiKey;
-  }
   if (typeof b.deeplKey === "string") {
     if (b.deeplKey && b.deeplKey !== "******") SVC.deeplKey = b.deeplKey;
   }

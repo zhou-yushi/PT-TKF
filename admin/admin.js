@@ -355,7 +355,7 @@
         const r = await fetch("/api/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-          body: JSON.stringify({ source: src, target: tgt, data: srcData })
+          body: JSON.stringify({ source: src, target: tgt, data: srcData, targetData: state.i18n[tgt] || {} })
         });
         const d = await r.json();
         if (r.ok && d.result) {
@@ -391,22 +391,12 @@
       if (!r.ok) return;
       const c = await r.json();
       if (c.provider) $("cfgProvider").value = c.provider;
-      if (c.agnesModel) $("cfgAgnesModel").value = c.agnesModel;
-      if (c.agnesBase) $("cfgAgnesBase").value = c.agnesBase;
-      $("cfgAgnesKey").value = c.hasAgnesKey ? "******" : "";
-      if (c.provider === "agnes" && !c.hasAgnesKey) {
-        setCfgState("提示：使用 Agnes 需先填入 API Key", "err");
-      }
     } catch (e) { /* 忽略 */ }
   }
   async function saveConfig() {
-    const key = $("cfgAgnesKey").value.trim();
     const payload = {
-      provider: $("cfgProvider").value,
-      agnesModel: $("cfgAgnesModel").value.trim() || "agnes-2.0-flash",
-      agnesBase: $("cfgAgnesBase").value.trim() || "https://apihub.agnes-ai.com/v1"
+      provider: $("cfgProvider").value
     };
-    if (key) payload.agnesApiKey = key; // 仅当填写了新值才发送
     setCfgState("正在保存…", "");
     try {
       const r = await fetch("/api/config", {
@@ -417,7 +407,6 @@
       const d = await r.json();
       if (r.ok && d.ok) {
         setCfgState("✓ 设置已保存", "ok");
-        $("cfgAgnesKey").value = "******";
       } else {
         setCfgState("保存失败: " + (d.error || r.status), "err");
       }

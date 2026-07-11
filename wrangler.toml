@@ -14,6 +14,4 @@ database_id = "ebe40f14-c671-4675-87e2-d59d66b0722a"
 
 # 非敏感环境变量（敏感项请用 secret：见 CLOUDFLARE_DEPLOY.md）
 [vars]
-TRANSLATE_PROVIDER = "agnes"
-AGNES_BASE = "https://apihub.agnes-ai.com/v1"
-AGNES_MODEL = "agnes-2.0-flash"
+TRANSLATE_PROVIDER = "google"

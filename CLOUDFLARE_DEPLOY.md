@@ -46,9 +46,8 @@ wrangler d1 execute pt-tkf-db --file=db/schema.sql
 |------|------|------|
 | `ADMIN_PASSWORD` | Secret | 后台登录密码（必填） |
 | `AUTH_SECRET` | Secret | 令牌签名密钥，随便一段随机串，例如 `openssl rand -hex 32` |
-| `AGNES_API_KEY` | Secret（可选） | 翻译服务 Key；填了则后台无需再手动输入 |
-| `TRANSLATE_PROVIDER` | 变量（可选） | 默认 `agnes` |
-| `AGNES_BASE` / `AGNES_MODEL` | 变量（可选） | 翻译服务地址与模型 |
+| `TRANSLATE_PROVIDER` | 变量（可选） | 默认 `google` |
+| `DEEPL_KEY` | Secret（可选） | DeepL 翻译 Key；选 DeepL 引擎时填写 |
 
 > 也可用 `wrangler pages secret put --project-name pt-tkf ADMIN_PASSWORD` 设置 Secret。
 
@@ -74,7 +73,7 @@ wrangler d1 execute pt-tkf-db --file=db/schema.sql
 
 1. 打开 `https://<你的域名>/admin`，用 `ADMIN_PASSWORD` 登录。
 2. 内容已内置种子数据（`functions/defaults.js`），可直接编辑后点「保存更改」，即写入 D1。
-3. 翻译功能：若已在第三步设置了 `AGNES_API_KEY`，直接可用；否则在后台「翻译服务设置」里填入 Key。
+3. 翻译功能：默认使用 Google 免费引擎，无需任何 Key；如需可选 DeepL，在后台「翻译服务设置」里选择并填入 Key。
 4. 前台联系表单提交后会进入 D1，后台「留言管理」可查看/标记/删除/导出。
 
 ## 七、数据迁移说明

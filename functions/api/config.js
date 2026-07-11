@@ -6,11 +6,7 @@ export async function onRequestGet({ request, env }) {
   if (!(await requireAuth(request, env))) return json({ error: "未授权，请先登录" }, 401);
   const c = await getConfig(env.TKF_DB, env);
   return json({
-    provider: c.provider,
-    agnesBase: c.agnesBase,
-    agnesModel: c.agnesModel,
-    agnesApiKey: c.agnesApiKey ? "******" : "",
-    hasAgnesKey: !!c.agnesApiKey
+    provider: c.provider
   });
 }
 
@@ -21,11 +17,6 @@ export async function onRequestPost({ request, env }) {
   const cur = await getConfig(env.TKF_DB, env);
   const next = { ...cur };
   if (b.provider) next.provider = b.provider;
-  if (b.agnesBase) next.agnesBase = b.agnesBase;
-  if (b.agnesModel) next.agnesModel = b.agnesModel;
-  if (typeof b.agnesApiKey === "string" && b.agnesApiKey && b.agnesApiKey !== "******") {
-    next.agnesApiKey = b.agnesApiKey;
-  }
   if (typeof b.deeplKey === "string" && b.deeplKey && b.deeplKey !== "******") {
     next.deeplKey = b.deeplKey;
   }
