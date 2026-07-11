@@ -98,7 +98,7 @@ export async function setContent(db, obj) {
 // ---------- 翻译服务配置 ----------
 export function defaultConfig(env) {
   return {
-    provider: (env && env.TRANSLATE_PROVIDER) || "agnes",
+    provider: (env && env.TRANSLATE_PROVIDER) || "google",
     agnesBase: (env && env.AGNES_BASE) || "https://apihub.agnes-ai.com/v1",
     agnesModel: (env && env.AGNES_MODEL) || "agnes-2.0-flash",
     agnesApiKey: (env && env.AGNES_API_KEY) || "",

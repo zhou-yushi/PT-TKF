@@ -185,7 +185,7 @@ function loadConfig() {
   let c = {};
   try { c = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8")); } catch (e) {}
   return Object.assign({
-    provider: process.env.TRANSLATE_PROVIDER || "agnes",
+    provider: process.env.TRANSLATE_PROVIDER || "google",
     deeplKey: process.env.DEEPL_KEY || "",
     agnesApiKey: process.env.AGNES_API_KEY || "",
     agnesBase: process.env.AGNES_BASE || "https://apihub.agnes-ai.com/v1",
@@ -227,69 +227,59 @@ function shouldTranslate(text, key) {
 function guessSource(text) {
   return hasHan(text) ? "zh" : "en";
 }
-function translateOne(text, source, target) {
+// 单个引擎请求助手：resolve(译文) 或 resolve(null) 表示失败
+function httpGetJson(url) {
   return new Promise((resolve) => {
-    if (!isTranslatable(text)) return resolve(text);
-    const sl = LANG_MAP[guessSource(text)], tl = LANG_MAP[target];
-    const q = encodeURIComponent(text);
-    if (SVC.provider === "agnes") {
-      // Agnes AI（OpenAI 兼容 chat/completions），用提示词实现翻译
-      const AGNES_API_KEY = SVC.agnesApiKey || process.env.AGNES_API_KEY || "";
-      if (!AGNES_API_KEY) { console.warn("[translate] Agnes API Key 未配置，跳过翻译"); return resolve(text); }
-      const sys = "你是一个专业翻译引擎。只输出翻译结果，不要任何解释、前缀或引号。"
-        + "自动识别源语言，将文本翻译为" + LANG_NAME[target] + "。"
-        + "保持原文中的型号、数字、百分比、邮箱、电话、网址、单位等原样不译。"
-        + "若原文已是目标语言或无意义符号，原样返回。";
-      const user = `请将以下文本翻译为${LANG_NAME[target]}：\n"""${text}"""`;
-      const body = JSON.stringify({ model: SVC.agnesModel, temperature: 0.2, max_tokens: 2048,
-        messages: [ { role: "system", content: sys }, { role: "user", content: user } ] });
-      const u = new URL(SVC.agnesBase + "/chat/completions");
-      const req = https.request({ hostname: u.hostname, path: u.pathname + u.search, method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + AGNES_API_KEY, "Accept-Encoding": "identity" } },
-        (res2) => {
-          let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
-            try {
-              const j = JSON.parse(d);
-              let out = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || "").trim();
-              out = out.replace(/^[\s"'“”「」]+|[\s"'“”「」]+$/g, ""); // 去除模型可能裹上的引号/三引号
-              resolve(out || text);
-            } catch (e) { resolve(text); }
-          });
-        });
-      req.on("error", () => resolve(text));
-      req.write(body); req.end();
-    } else if (SVC.deeplKey) {
-      // DeepL 免费接口
-      const body = `auth_key=${encodeURIComponent(SVC.deeplKey)}&text=${q}&source_lang=${sl.toUpperCase()}&target_lang=${tl.toUpperCase()}`;
-      const req = https.request(
-        { hostname: "api-free.deepl.com", path: "/v2/translate", method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept-Encoding": "identity" } },
-        (res2) => { let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
-          try { resolve(JSON.parse(d).translations[0].text || text); } catch (e) { resolve(text); }
-        }); });
-      req.on("error", () => resolve(text));
-      req.write(body); req.end();
-    } else if (SVC.provider === "mymemory") {
-      const url = `https://api.mymemory.translated.net/get?q=${q}&langpair=${sl}|${tl}`;
-      https.get(url, { headers: { "Accept-Encoding": "identity" } }, (res2) => { let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
-        try {
-          const j = JSON.parse(d);
-          if (j.responseStatus === 200 && j.responseData && j.responseData.translatedText) resolve(j.responseData.translatedText);
-          else resolve(text);
-        } catch (e) { resolve(text); }
-      }); }).on("error", () => resolve(text));
-    } else {
-      // Google 翻译（非官方 gtx 接口，无需密钥）
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${q}`;
-      https.get(url, { headers: { "Accept-Encoding": "identity" } }, (res2) => { let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
-        try {
-          const arr = JSON.parse(d);
-          const out = (arr[0] || []).map(seg => seg[0]).join("");
-          resolve(out || text);
-        } catch (e) { resolve(text); }
-      }); }).on("error", () => resolve(text));
-    }
+    https.get(url, { headers: { "Accept-Encoding": "identity" } }, (res2) => {
+      let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
+        try { resolve(JSON.parse(d)); } catch { resolve(null); }
+      });
+    }).on("error", () => resolve(null));
   });
+}
+function mtGoogle(text, sl, tl) {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
+  return httpGetJson(url).then(arr => {
+    if (!Array.isArray(arr)) return null;
+    const out = (arr[0] || []).map(seg => seg[0]).join("").trim();
+    return out || null;
+  });
+}
+function mtMyMemory(text, sl, tl) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sl}|${tl}`;
+  return httpGetJson(url).then(j => {
+    if (j && j.responseStatus === 200 && j.responseData && j.responseData.translatedText) {
+      const out = j.responseData.translatedText.trim();
+      if (!out || /MYMEMORY WARNING|INVALID|QUERY LENGTH LIMIT|NO QUERY SPECIFIED/i.test(out)) return null;
+      return out;
+    }
+    return null;
+  });
+}
+function mtDeepL(text, sl, tl, key) {
+  return new Promise((resolve) => {
+    const dSl = sl.split("-")[0].toUpperCase(), dTl = tl.split("-")[0].toUpperCase();
+    const body = `auth_key=${encodeURIComponent(key)}&text=${encodeURIComponent(text)}&source_lang=${dSl}&target_lang=${dTl}`;
+    const req = https.request(
+      { hostname: "api-free.deepl.com", path: "/v2/translate", method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept-Encoding": "identity" } },
+      (res2) => { let d = ""; res2.on("data", c => d += c); res2.on("end", () => {
+        try { const t = JSON.parse(d).translations[0].text; resolve((t && t.trim()) || null); } catch { resolve(null); }
+      }); });
+    req.on("error", () => resolve(null));
+    req.write(body); req.end();
+  });
+}
+// 引擎链：DeepL(有 Key) → Google → MyMemory；全部失败保留原文。不再用 LLM。
+async function translateOne(text, source, target) {
+  if (!isTranslatable(text)) return text;
+  const sl = LANG_MAP[source] || LANG_MAP[guessSource(text)];
+  const tl = LANG_MAP[target];
+  if (!tl || sl === tl) return text;
+  if (SVC.deeplKey) { const o = await mtDeepL(text, sl, tl, SVC.deeplKey); if (o) return o; }
+  let o = await mtGoogle(text, sl, tl); if (o) return o;
+  o = await mtMyMemory(text, sl, tl); if (o) return o;
+  return text;
 }
 // 递归翻译对象（带并发限制，避免触发配额）
 function translateObject(obj, source, target, limit = 5) {
@@ -316,13 +306,16 @@ function translateObject(obj, source, target, limit = 5) {
     }
   }
   return Promise.all(Array.from({ length: Math.min(limit, unique.length || 1) }, worker)).then(() => {
-    function walk(o) {
-      if (typeof o === "string") return cache[o] !== undefined ? cache[o] : o;
-      if (Array.isArray(o)) return o.map(walk);
-      if (o && typeof o === "object") { const out = {}; for (const k of Object.keys(o)) out[k] = walk(o[k]); return out; }
+    function walk(o, key) {
+      if (typeof o === "string") {
+        if (SKIP_KEYS.has(key)) return o;
+        return cache[o] !== undefined ? cache[o] : o;
+      }
+      if (Array.isArray(o)) return o.map(v => walk(v, key));
+      if (o && typeof o === "object") { const out = {}; for (const k of Object.keys(o)) out[k] = walk(o[k], k); return out; }
       return o;
     }
-    return walk(obj);
+    return walk(obj, "");
   });
 }
 
