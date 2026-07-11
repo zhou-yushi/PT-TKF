@@ -1,4 +1,4 @@
-// ===== PT-TKF 种子/兜底内容 =====
+﻿// ===== PT-TKF 种子/兜底内容 =====
 // 当 D1 的 kv 表尚无 "content" 时使用，保证后台首次打开即有数据可编辑。
 // 在前台也可用（assets/js/i18n.js 仍有内置兜底），二者独立。
 export const DEFAULT_CONTENT = {
@@ -206,9 +206,10 @@ export const DEFAULT_CONTENT = {
     }
   },
   "brochures": [
-    { "model": "KR110D-A", "en": "Jet Grouting Rig", "img": "assets/img/110.png", "pdf": "assets/pdf/KR110D-A.pdf" },
-    { "model": "KR125A", "en": "Jet Grouting Rig", "img": "assets/img/125.png", "pdf": "" },
-    { "model": "KR300E", "en": "Jet Grouting Rig", "img": "assets/img/300.png", "pdf": "assets/pdf/KR300E.pdf" },
-    { "model": "KR360A", "en": "Jet Grouting Rig", "img": "assets/img/360.png", "pdf": "" }
+    { "model": "KR110D-A", "en": "Jet Grouting Rig", "img": "assets/img/110.webp", "pdf": "assets/pdf/KR110D-A.pdf" },
+    { "model": "KR125A", "en": "Jet Grouting Rig", "img": "assets/img/125.webp", "pdf": "" },
+    { "model": "KR300E", "en": "Jet Grouting Rig", "img": "assets/img/300.webp", "pdf": "assets/pdf/KR300E.pdf" },
+    { "model": "KR360A", "en": "Jet Grouting Rig", "img": "assets/img/360.webp", "pdf": "" }
   ]
 };
+

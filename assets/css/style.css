@@ -1,4 +1,4 @@
-/* ===== PT-TKF · 液态玻璃 UI/UX 改版 / Liquid-Glass Redesign ===== */
+﻿/* ===== PT-TKF · 液态玻璃 UI/UX 改版 / Liquid-Glass Redesign ===== */
 :root {
   --primary: #0b3d91;
   --primary-dark: #06245c;
@@ -131,7 +131,7 @@ a { text-decoration: none; color: inherit; }
   position: absolute; inset: 0;
   background:
     linear-gradient(120deg, rgba(11, 61, 145, 0.70), rgba(7, 42, 102, 0.52)),
-    url("/assets/img/hero-jakarta.png") center/cover;
+    url("/assets/img/hero-jakarta.webp") center/cover;
   background-blend-mode: multiply;
 }
 .hero-bg::after {
@@ -438,3 +438,4 @@ a { text-decoration: none; color: inherit; }
   .lightbox-prev { left: 10px; }
   .lightbox-next { right: 10px; }
 }
+
