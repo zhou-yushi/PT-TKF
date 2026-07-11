@@ -24,7 +24,7 @@ export const DEFAULT_CONTENT = {
         ]
       },
       "brochures": {
-        "title": "产品手册", "subtitle": "四种旋喷桩机型号，点击下载对应技术手册", "download": "下载宣传册", "zoom": "点击放大",
+        "title": "产品图册", "subtitle": "四款旋喷桩机型号，点击图片查看大图", "download": "下载宣传册", "zoom": "点击放大",
         "descs": {
           "KR110D-A": "小型旋喷桩机，结构紧凑，适用于狭窄场地与轻型地基加固。",
           "KR125A": "中型旋喷桩机，兼顾施工效率与运行稳定，适配多种地质条件。",

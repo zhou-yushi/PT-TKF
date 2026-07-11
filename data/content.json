@@ -71,8 +71,8 @@
         ]
       },
       "brochures": {
-        "title": "产品手册",
-        "subtitle": "四种旋喷桩机型号，点击下载对应技术手册",
+        "title": "产品图册",
+        "subtitle": "四款旋喷桩机型号，点击图片查看大图",
         "download": "下载宣传册",
         "zoom": "点击放大",
         "descs": {
@@ -244,8 +244,8 @@
         ]
       },
       "brochures": {
-        "title": "Buku Panduan Produk",
-        "subtitle": "Empat model mesin jet grouting, klik untuk mengunduh brosur teknis yang sesuai",
+        "title": "Galeri Produk",
+        "subtitle": "Empat model mesin jet grouting, klik gambar untuk memperbesar",
         "download": "Unduh Brosur",
         "zoom": "Klik untuk memperbesar",
         "descs": {
@@ -417,8 +417,8 @@
         ]
       },
       "brochures": {
-        "title": "Product Manual",
-        "subtitle": "Four models of jet grouting rigs, click to download the corresponding technical manual.",
+        "title": "Product Gallery",
+        "subtitle": "Four jet grouting rig models — click an image to enlarge.",
         "download": "Download Brochure",
         "zoom": "Click to enlarge",
         "descs": {
