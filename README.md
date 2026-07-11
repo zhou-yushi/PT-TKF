@@ -13,9 +13,9 @@ My-TKF/
 │   ├── js/
 │   │   ├── i18n.js         # 三语言内容字典（在此修改文案）
 │   │   └── main.js         # 语言切换、动态渲染、交互逻辑
-│   └── img/                # 各型号展示图片（WebP 为主，同名 .png 为兼容兜底）
-│       ├── 110.webp  125.webp  300.webp  360.webp
-│       └── hero-jakarta.webp
+│   └── img/                # 各型号展示图片与首页背景图（JPG 格式）
+│       ├── 110.jpg  125.jpg  300.jpg  360.jpg
+│       └── hero-jakarta.jpg
 ├── _headers                # Cloudflare Pages 缓存与安全头
 └── README.md
 ```

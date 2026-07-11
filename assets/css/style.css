@@ -132,7 +132,7 @@ a { text-decoration: none; color: inherit; }
   position: absolute; inset: 0;
   background:
     linear-gradient(120deg, rgba(11, 61, 145, 0.70), rgba(7, 42, 102, 0.52)),
-    url("/assets/img/hero-jakarta.webp") center/cover;
+    url("/assets/img/hero-jakarta.jpg") center/cover;
   background-blend-mode: multiply;
 }
 .hero-bg::after {

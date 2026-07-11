@@ -44,10 +44,10 @@ window.DEFAULT_CONTENT = {
     }
   },
   brochures: [
-    { model: "KR110D-A", en: "Jet Grouting Rig", img: "assets/img/110.webp", pdf: "assets/pdf/KR110D-A.pdf" },
-    { model: "KR125A", en: "Jet Grouting Rig", img: "assets/img/125.webp", pdf: "" },
-    { model: "KR300E", en: "Jet Grouting Rig", img: "assets/img/300.webp", pdf: "assets/pdf/KR300E.pdf" },
-    { model: "KR360A", en: "Jet Grouting Rig", img: "assets/img/360.webp", pdf: "" }
+    { model: "KR110D-A", en: "Jet Grouting Rig", img: "assets/img/110.jpg", pdf: "" },
+    { model: "KR125A", en: "Jet Grouting Rig", img: "assets/img/125.jpg", pdf: "" },
+    { model: "KR300E", en: "Jet Grouting Rig", img: "assets/img/300.jpg", pdf: "" },
+    { model: "KR360A", en: "Jet Grouting Rig", img: "assets/img/360.jpg", pdf: "" }
   ]
 };
 

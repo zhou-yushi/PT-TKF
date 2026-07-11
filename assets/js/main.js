@@ -87,10 +87,7 @@
     grid.innerHTML = BROCHURES.map((b, i) => `
       <div class="brochure-card reveal">
         <button class="brochure-img" data-zoom="${i}" aria-label="放大查看 ${b.model}">
-          <picture>
-            <source srcset="${absUrl(b.img)}" type="image/webp" />
-            <img src="${absUrl(b.img.replace(/\.webp$/, '.png'))}" alt="${b.model}" loading="lazy" />
-          </picture>
+          <img src="${absUrl(b.img)}" alt="${b.model}" loading="lazy" />
           <span class="zoom-hint">${t.brochures.zoom}</span>
         </button>
         <div class="brochure-body">
@@ -192,7 +189,7 @@
       lightboxIndex = (i + BROCHURES.length) % BROCHURES.length;
       const b = BROCHURES[lightboxIndex];
       lbImg.src = absUrl(b.img);
-      lbImg.onerror = () => { lbImg.onerror = null; lbImg.src = absUrl(b.img.replace(/\.webp$/, '.png')); };
+      lbImg.onerror = null;
       lbImg.alt = b.model;
       lbCap.textContent = b.model + " · " + b.en;
     }
