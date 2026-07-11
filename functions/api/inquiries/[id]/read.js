@@ -1,5 +1,5 @@
 // POST /api/inquiries/:id/read  鉴权：标记已读/未读
-import { json, requireAuth } from "../lib.js";
+import { json, requireAuth } from "../../../lib.js";
 
 export async function onRequestPost({ request, params, env }) {
   if (!(await requireAuth(request, env))) return json({ error: "未授权，请先登录" }, 401);

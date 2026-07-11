@@ -1,5 +1,5 @@
 // DELETE /api/inquiries/:id  鉴权：删除留言
-import { json, requireAuth } from "../lib.js";
+import { json, requireAuth } from "../../lib.js";
 
 export async function onRequestDelete({ request, params, env }) {
   if (!(await requireAuth(request, env))) return json({ error: "未授权，请先登录" }, 401);

@@ -1,5 +1,5 @@
 // GET /api/inquiries/export  鉴权：导出 CSV
-import { json, requireAuth } from "../lib.js";
+import { json, requireAuth } from "../../lib.js";
 
 export async function onRequestGet({ request, env }) {
   if (!(await requireAuth(request, env))) return json({ error: "未授权，请先登录" }, 401);
