@@ -91,13 +91,14 @@ a { text-decoration: none; color: inherit; }
   border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 13px;
   padding: 5px 11px; border-radius: 999px; color: var(--text-light); transition: all .25s;
   min-width: 72px; text-align: center;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
 }
 .lang-btn.active {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff; box-shadow: 0 6px 16px rgba(11, 61, 145, 0.28);
 }
 .lang-btn .flag {
-  width: 1.05em; height: auto; margin-right: 5px; vertical-align: -0.12em; border-radius: 2px;
+  width: 1.1em; height: 1.1em; object-fit: contain; margin: 0; border-radius: 2px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, .12);
 }
 
