@@ -531,7 +531,7 @@
       "model": "KR125A",
       "en": "Jet Grouting Rig",
       "img": "assets/img/125.png",
-      "pdf": "assets/pdf/KR125A-202412.pdf"
+      "pdf": ""
     },
     {
       "model": "KR300E",
@@ -543,7 +543,7 @@
       "model": "KR360A",
       "en": "Jet Grouting Rig",
       "img": "assets/img/360.png",
-      "pdf": "assets/pdf/KR360A-202412.pdf"
+      "pdf": ""
     }
   ]
 }

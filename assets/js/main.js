@@ -94,7 +94,7 @@
           <h3>${b.model}</h3>
           <span class="en">${b.en}</span>
           <p>${t.brochures.descs[b.model] || ""}</p>
-          <a class="btn btn-primary brochure-btn" href="${b.pdf}" download>${t.brochures.download}</a>
+          ${b.pdf ? `<a class="btn btn-primary brochure-btn" href="${b.pdf}" download>${t.brochures.download}</a>` : ""}
         </div>
       </div>`).join("");
   }
