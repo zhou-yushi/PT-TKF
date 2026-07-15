@@ -4,6 +4,12 @@
 /assets/*
   Cache-Control: public, max-age=86400, must-revalidate
 
+# /data/ 下的 JSON 不应被搜索引擎收录或缓存（含本地明文 API Key / 留言等敏感文件，
+# 这些文件已被 .gitignore 排除、不会部署；此规则为防御性兜底，且不影响运行必需的 data/content.js 模块）
+/data/*.json
+  Cache-Control: no-store
+  X-Robots-Tag: noindex
+
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
