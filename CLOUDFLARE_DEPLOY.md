@@ -89,3 +89,30 @@ wrangler d1 execute pt-tkf-db --local --file=db/schema.sql
 # 启动本地 Pages（含 Functions）
 wrangler pages dev --binding TKF_DB=pt-tkf-db .
 ```
+
+## 九、绑定自定义一级域名（如 pt-tkf.top）
+
+本项目的 Pages 项目名为 `pt-tkf`，默认域名为 `pt-tkf.pages.dev`。要使用你自己的一级域名（如 `pt-tkf.top`），按下面步骤操作，无需改动代码（代码使用同源相对路径 `/api/...`、`/admin`）。
+
+> 根域（apex，如 `pt-tkf.top`）要生效，域名必须交由 **Cloudflare 托管**（把 NS 指向 Cloudflare）。仅加 CNAME 的方式不支持根域。
+
+### 情形 A：域名已在 Cloudflare 托管（推荐）
+1. Cloudflare 控制台 → 左侧 **Workers & Pages** → 选择 **pt-tkf** 项目。
+2. 进入 **Custom domains（自定义域）** → 点击 **Set up a domain / 添加自定义域**。
+3. 输入 `pt-tkf.top` 并确认。Cloudflare 会自动：
+   - 添加根域的 `A` / `AAAA` 记录指向 Pages；
+   - 自动签发并续期 SSL 证书。
+4. 几分钟后访问 `https://pt-tkf.top` 即可（证书生效可能需几分钟到数小时，状态从 Pending 变 Active）。
+
+### 情形 B：域名在其它注册商（阿里云 / 腾讯云 / NameSilo 等）
+1. Cloudflare 控制台 **Add a Site（添加站点）** 输入 `pt-tkf.top`，选 Free 套餐。
+2. Cloudflare 会给出两个 NS 服务器（如 `xxx.ns.cloudflare.com` / `yyy.ns.cloudflare.com`）。
+3. 到域名注册商后台，把该域名的 **Name Server (NS)** 改为 Cloudflare 提供的两个并保存。
+4. 回到 Cloudflare 等待 NS 生效（通常几分钟，最长 24–48 小时），站点状态变为 Active。
+5. 然后按【情形 A】第 2–4 步，在 Pages 项目里添加自定义域 `pt-tkf.top`。
+
+### 注意事项
+- 后台登录态（localStorage 的 token）与 `pt-tkf.pages.dev` 是不同源，请改用 `https://pt-tkf.top/admin` **重新登录一次**。
+- D1 数据库、密钥绑定都是项目级，切换域名 **不影响已存数据**，无需迁移。
+- 如需同时支持 `www.pt-tkf.top`：在 Custom domains 里再加一条 `www.pt-tkf.top`；或设「根域 → www」重定向（Cloudflare 的 Redirect Rules）。
+- 旧域名 `pt-tkf.pages.dev` 仍可继续访问，两者指向同一份部署。

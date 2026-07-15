@@ -303,6 +303,7 @@ a { text-decoration: none; color: inherit; }
 .footer-logo { margin-bottom: 16px; }
 .footer-desc { color: rgba(255, 255, 255, 0.75); font-size: 14px; max-width: 320px; }
 .footer-col a { display: block; color: rgba(255, 255, 255, 0.8); padding: 6px 0; font-size: 14px; transition: color .2s; }
+.footer-col a.admin-link { color: inherit; text-decoration: underline; }
 .footer-col a:hover { color: var(--gold); }
 .footer-col p { color: rgba(255, 255, 255, 0.8); font-size: 14px; padding: 4px 0; }
 .footer-bottom {

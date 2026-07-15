@@ -66,7 +66,7 @@ export const DEFAULT_CONTENT = {
         "phoneLabel": "联系电话", "phone": "+62 21 0000 0000", "emailLabel": "电子邮箱", "email": "info@pt-tkf.com",
         "whatsappLabel": "WhatsApp", "whatsapp": "+62 800 0000 0000",
         "formName": "您的姓名", "formPhone": "联系电话 / WhatsApp", "formMsg": "项目需求描述", "formSubmit": "发送咨询",
-        "formNote": "提交后将跳转至您的邮件客户端，或直接通过 WhatsApp 联系我们。"
+        "formNote": "提交后我们会尽快通过电话 / WhatsApp 与您联系；若网络异常将为您唤起邮件客户端。"
       },
       "footer": { "desc": "PT-TKF — 印度尼西亚专业基础施工公司。", "quickLinks": "快速导航", "contactUs": "联系我们", "rights": "版权所有", "built": "基础施工 · 旋挖钻孔灌注桩" }
     },
@@ -133,7 +133,7 @@ export const DEFAULT_CONTENT = {
         "phoneLabel": "Nomor Telepon", "phone": "+62 21 0000 0000", "emailLabel": "Email", "email": "info@pt-tkf.com",
         "whatsappLabel": "WhatsApp", "whatsapp": "+62 800 0000 0000",
         "formName": "Nama Anda", "formPhone": "Nomor Telepon / WhatsApp", "formMsg": "Deskripsi Kebutuhan Proyek", "formSubmit": "Kirim Pertanyaan",
-        "formNote": "Setelah dikirim, Anda akan diarahkan ke klien email Anda, atau hubungi kami langsung melalui WhatsApp."
+        "formNote": "Setelah dikirim, kami akan menghubungi Anda melalui telepon / WhatsApp; jika jaringan gagal, klien email akan dibuka."
       },
       "footer": { "desc": "PT-TKF — Perusahaan konstruksi fondasi profesional Indonesia.", "quickLinks": "Tautan Cepat", "contactUs": "Hubungi Kami", "rights": "Hak Cipta", "built": "Konstruksi Fondasi · Tiang Pancang Bor Putar" }
     },
@@ -200,7 +200,7 @@ export const DEFAULT_CONTENT = {
         "phoneLabel": "Phone", "phone": "+62 21 0000 0000", "emailLabel": "Email", "email": "info@pt-tkf.com",
         "whatsappLabel": "WhatsApp", "whatsapp": "+62 800 0000 0000",
         "formName": "Your Name", "formPhone": "Phone / WhatsApp", "formMsg": "Project Requirements", "formSubmit": "Send Inquiry",
-        "formNote": "After submission, you will be redirected to your email client, or contact us directly via WhatsApp."
+        "formNote": "After submitting, we will contact you via phone / WhatsApp. If the network fails, your email client will open."
       },
       "footer": { "desc": "PT-TKF — Professional foundation construction company in Indonesia.", "quickLinks": "Quick Links", "contactUs": "Contact Us", "rights": "All Rights Reserved", "built": "Foundation Construction · Rotary Bored Pile" }
     }
