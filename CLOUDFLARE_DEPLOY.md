@@ -9,7 +9,7 @@
 |------|------|
 | 静态站点（前台/后台页面） | Cloudflare Pages 静态托管 |
 | API 接口 | `functions/api/*.js`（Pages Functions） |
-| 数据存储 | 单一 D1 数据库 `pt-tkf-db`：<br>• `kv` 表：内容、翻译配置、上传图片（dataURL）<br>• `inquiries` 表：联系表单留言 |
+| 数据存储 | D1 数据库 `pt-tkf-db`：<br>• `kv` 表：内容、翻译配置<br>• `inquiries` 表：联系表单留言<br>上传图片（宣传册等）存于 **R2 桶 `pt-tkf-assets`**（键 `brochures/<name>`），由 `/api/img/<name>` 提供；未绑定 R2 时回退 D1 |
 | 后台鉴权 | 无状态 HMAC 签名令牌（7 天有效，登出可撤销） |
 | 敏感信息 | 密码/密钥走环境变量（Secret），不入库、不入 git |
 
@@ -50,13 +50,27 @@ wrangler d1 execute pt-tkf-db --file=db/schema.sql
 
 > 也可用 `wrangler pages secret put --project-name pt-tkf ADMIN_PASSWORD` 设置 Secret。
 
-## 四、绑定 D1
+## 四、绑定 D1 与 R2
 
 控制台 **Pages → pt-tkf → Settings → Functions → D1 database bindings**：
 - 变量名（Binding name）：`TKF_DB`
 - 数据库：`pt-tkf-db`
 
 （这样 `functions/` 里的代码就能通过 `env.TKF_DB` 访问数据库。）
+
+创建并绑定 **R2 桶**（用于存放上传的图片，替代在 D1 中存 base64）：
+
+```bash
+wrangler r2 bucket create pt-tkf-assets
+```
+
+控制台 **Pages → pt-tkf → Settings → Functions → R2 bucket bindings**：
+- 变量名（Binding name）：`TKF_BUCKET`
+- 桶（Bucket）：`pt-tkf-assets`
+
+> 未绑定 `TKF_BUCKET` 时，代码会自动回退到 D1 存储旧图片，部署前不配 R2 也不会报错；但**正式环境建议绑定 R2**，避免大图撑爆 D1 单格限制（D1 单值上限约 100KB 压缩后）。
+>
+> 本地调试需在 `wrangler.toml` 已配置 `[[r2_buckets]]`（本项目已加好 `TKF_BUCKET / pt-tkf-assets`）。
 
 ## 五、部署
 
@@ -79,7 +93,7 @@ wrangler d1 execute pt-tkf-db --file=db/schema.sql
 
 - 你之前在本地 `server.js` 下编辑过的内容（旧文件 `data/content.json`）已由新的默认种子 `data/content.js` 取代，**无需迁移**；登录后台点一次「保存更改」即持久化到 D1。
 - 本地 `server.js` 仍保留，仅供本机 `node server.js` 调试，**不会被 Pages 运行**。
-- 已上传的历史图片在 `assets/` 静态目录，照常访问；新上传图片存入 D1，由 `/api/img/<name>` 提供。
+- 已上传的历史图片在 `assets/` 静态目录，照常访问；新上传图片写入 **R2 桶**（键 `brochures/<name>`），由 `/api/img/<name>` 提供；若尚未绑定 R2，则临时回退写入 D1。旧 D1 中已有的 `img:<name>` 数据仍可正常显示，无需迁移。
 
 ## 八、本地调试
 

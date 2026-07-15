@@ -72,6 +72,17 @@ export async function revokeToken(token, db) {
   await db.prepare("INSERT OR REPLACE INTO kv (k, v) VALUES (?, ?)").bind("revoke:" + token, "1").run();
 }
 
+// ---------- 图片 dataURL → 二进制 ----------
+// 解析 "data:image/png;base64,...." 返回 { mime, ext, bin }
+export function parseDataUrl(dataUrl) {
+  const m = /^data:(image\/(\w+));base64,(.+)$/.exec(dataUrl);
+  if (!m) return null;
+  const mime = m[1];
+  const ext = m[2] === "jpeg" ? "jpg" : m[2];
+  const bin = Uint8Array.from(atob(m[3]), c => c.charCodeAt(0));
+  return { mime, ext, bin };
+}
+
 // ---------- D1 键值助手（用 kv 表模拟 KV） ----------
 export async function kvGet(db, key) {
   const row = await db.prepare("SELECT v FROM kv WHERE k = ?").bind(key).first();
