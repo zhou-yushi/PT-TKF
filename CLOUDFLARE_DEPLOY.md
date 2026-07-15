@@ -71,13 +71,13 @@ wrangler d1 execute pt-tkf-db --file=db/schema.sql
 ## 六、首次使用
 
 1. 打开 `https://<你的域名>/admin`，用 `ADMIN_PASSWORD` 登录。
-2. 内容已内置种子数据（`functions/defaults.js`），可直接编辑后点「保存更改」，即写入 D1。
+2. 内容默认种子维护在 **`data/content.js`**（`functions/defaults.js` 仅再导出它），可直接在 `data/content.js` 调整；登录后台点一次「保存更改」即持久化到 D1。
 3. 翻译功能：默认使用 Google 免费引擎，无需任何 Key；备用引擎 MyMemory 同样免费。
 4. 前台联系表单提交后会进入 D1，后台「留言管理」可查看/标记/删除/导出。
 
 ## 七、数据迁移说明
 
-- 你之前在本地 `server.js` 下编辑过的内容（`data/content.json`）已作为种子内置，**无需迁移**；登录后台点一次「保存更改」即持久化到 D1。
+- 你之前在本地 `server.js` 下编辑过的内容（旧文件 `data/content.json`）已由新的默认种子 `data/content.js` 取代，**无需迁移**；登录后台点一次「保存更改」即持久化到 D1。
 - 本地 `server.js` 仍保留，仅供本机 `node server.js` 调试，**不会被 Pages 运行**。
 - 已上传的历史图片在 `assets/` 静态目录，照常访问；新上传图片存入 D1，由 `/api/img/<name>` 提供。
 
