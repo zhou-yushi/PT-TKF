@@ -35,10 +35,23 @@ app.use(express.static(__dirname)); // 前台（index.html 等）
 app.use("/admin", express.static(path.join(__dirname, "admin"))); // 后台界面
 
 // ---------- 数据读写 ----------
+// 从权威源 data/content.js（ES 模块）读取默认内容，作为本地 content.json 缺失时的种子
+function readDefaultSource() {
+  try {
+    const src = fs.readFileSync(path.join(__dirname, "data", "content.js"), "utf-8");
+    const code = src.replace(/export\s+const\s+DEFAULT_CONTENT\s*=/, "return ");
+    return new Function(code + "\n")();
+  } catch (e) {
+    return null;
+  }
+}
 function readData() {
   try {
     return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
   } catch (e) {
+    // 本地 content.json 缺失（如仓库已移除）：回落到权威源 data/content.js
+    const def = readDefaultSource();
+    if (def) return def;
     console.error("读取内容失败:", e.message);
     return { i18n: {}, brochures: [] };
   }

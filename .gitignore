@@ -10,6 +10,8 @@ server.log
 
 # 访客留言（含手机号等个人隐私，不入库）
 data/inquiries.json
+# 本地内容文件（生产用 data/content.js → D1；此文件仅本地 server.js 使用，且由仓库移除）
+data/content.json
 
 # 翻译服务配置（含 API Key 等敏感信息，不入库）
 data/config.json
